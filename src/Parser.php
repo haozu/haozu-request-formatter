@@ -61,12 +61,7 @@ class Parser {
         //格式化类全局唯一每次调用重新初始化属性
         $formatter->onInitialize($value,$rule);
         //解析规则
-        $result = $formatter->parse();
-        //是否必填统一处理 默认值优先级高于是否必填
-        if ($result === NULL && (isset($rule['require']) && $rule['require'])) {
-            throw new BadRequestException(sprintf('%s require, but miss',$rule['name']));
-        }
-        return $result;
+        return $formatter->parse();
     }
 
     /**
@@ -86,8 +81,9 @@ class Parser {
         $value = isset($params[$rule['name']]) ? $params[$rule['name']] : $value;
         $type  = isset($rule['type']) ? strtolower($rule['type']) : 'string';
         
-        if ($value === NULL) { 
-            return $value;
+        //是否必填统一处理 默认值优先级高于是否必填
+        if ($value === NULL && (isset($rule['require']) && $rule['require'])) {
+            throw new BadRequestException(sprintf('%s require, but miss',$rule['name']));
         }
         return static::formatAllType($type, $value, $rule);
     }
