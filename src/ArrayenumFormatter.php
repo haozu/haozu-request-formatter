@@ -7,7 +7,7 @@ use Haozu\RequestFormatter\Exception\BadRequestException;
 /**
  * Formatter 格式化数组枚举类型
  */
-class ArrayEnumFormatter extends BaseFormatter implements FormatterInterface 
+class ArrayenumFormatter extends BaseFormatter implements FormatterInterface 
 {
 
 
