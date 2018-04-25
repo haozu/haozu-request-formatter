@@ -1,12 +1,13 @@
 <?php
 namespace Haozu\RequestFormatter;
 
+use Haozu\RequestFormatter\Exception\InternalServerErrorException;
 use Haozu\RequestFormatter\Exception\BadRequestException;
 
 /**
- * Formatter Array 格式化数组
+ * Formatter 格式化数组枚举类型
  */
-class ArrayFormatter extends BaseFormatter implements FormatterInterface 
+class ArrayEnumFormatter extends BaseFormatter implements FormatterInterface 
 {
 
 
@@ -19,6 +20,12 @@ class ArrayFormatter extends BaseFormatter implements FormatterInterface
      * 分割符
      */ 
     protected $separator;
+
+
+    /*
+     * 范围
+     */ 
+    protected $range;
 
 
     /**
@@ -34,6 +41,7 @@ class ArrayFormatter extends BaseFormatter implements FormatterInterface
      *          'separator' => '', 
      *          'min'       => '',
      *          'max'       => ''
+     *          'range'    => [1,2,3], 
      *        ];
      * 
      */ 
@@ -42,7 +50,13 @@ class ArrayFormatter extends BaseFormatter implements FormatterInterface
         parent::onInitialize($value,$rule);
         $this->format    = isset($rule['format']) ? strtolower($rule['format']) : '' ;
         $this->separator = isset($rule['separator']) ? $rule['separator'] : ',' ;
-        
+        if (!isset($rule['range'])) {
+            throw new InternalServerErrorException(sprintf("miss %s's arrayEnum range",$this->name));
+        }
+        if (empty($rule['range']) || !is_array($rule['range'])) {
+            throw new InternalServerErrorException(sprintf("%s's arrayEnum range can not be empty",$this->name));
+        }
+        $this->range    = $rule['range'];
     }
 
 
@@ -70,7 +84,14 @@ class ArrayFormatter extends BaseFormatter implements FormatterInterface
             }
         }
         $this->value = count($result);
+        //检查数量以及范围是否符合
         $this->filterByRange();
+        if (array_diff($result,$this->range)) {
+            throw new BadRequestException(
+                sprintf('%s should be in %s, but now %s = %s', 
+                    $this->name , implode('/', $this->range), $this->name,implode('/', $result))
+            );
+        }
         return $result;
     }
 }
