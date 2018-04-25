@@ -1,7 +1,7 @@
 <?php
 namespace Haozu\RequestFormatter;
 
-use Haozu\Exception\BadRequestException;
+use Haozu\RequestFormatter\Exception\BadRequestException;
 /**
  * StringFormatter  格式化字符串
  */
