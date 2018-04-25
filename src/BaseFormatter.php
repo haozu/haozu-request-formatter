@@ -109,20 +109,5 @@ class BaseFormatter
         }
     }
 
-    /**
-     * 格式化枚举类型
-     *
-     * @param  array $range 
-     * @throws BadRequestException
-     */
-    protected function formatEnumValue($range) 
-    {
-        if (!in_array($this->value, $range)) {
-            throw new BadRequestException(
-                sprintf('%s should be in %s, but now %s = %s', 
-                    $this->name , implode('/', $range), $this->name, $this->value)
-            );
-        }
-    }
 
 }

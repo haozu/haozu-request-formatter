@@ -2,6 +2,7 @@
 namespace Haozu\RequestFormatter;
 
 use Haozu\RequestFormatter\Exception\InternalServerErrorException;
+use Haozu\RequestFormatter\Exception\BadRequestException;
 /**
  * EnumFormatter 格式化枚举类型
  */
@@ -9,7 +10,7 @@ class EnumFormatter extends BaseFormatter implements FormatterInterface
 {   
 
     /*
-     * 格式化类型
+     * 范围
      */ 
     protected $range;
 
@@ -44,8 +45,13 @@ class EnumFormatter extends BaseFormatter implements FormatterInterface
      * @return $value
      */
     public function parse() {
-        $this->formatEnumValue($this->range);
-        return $value;
+        if (!in_array($this->value, $this->range)) {
+            throw new BadRequestException(
+                sprintf('%s should be in %s, but now %s = %s', 
+                    $this->name , implode('/', $this->range), $this->name, $this->value)
+            );
+        }
+        return $this->value;
     }
  
 }
