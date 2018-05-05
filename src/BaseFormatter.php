@@ -41,7 +41,15 @@ class BaseFormatter
      * 
      */ 
     public function onInitialize($value,array $rule)
-    {
+    {   
+        unset(
+                $this->min,$this->max,$this->name,
+                $this->value,$this->format,
+                $this->separator,$this->range,
+                $this->callback,$this->args,
+                $this->regex
+            );
+
         if(isset($rule['min'])){
             $this->min = $rule['min'];
         }
